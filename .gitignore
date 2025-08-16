@@ -162,3 +162,17 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Java / Maven
+target/
+*.log
+*.class
+*.jar
+*.war
+*.ear
+
+# Node / React
+node_modules/
+dist/
+.vite/
+.env.local
