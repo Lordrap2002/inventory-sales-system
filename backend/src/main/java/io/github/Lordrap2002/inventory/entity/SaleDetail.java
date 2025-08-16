@@ -1,4 +1,4 @@
-package io.github.Lordrap2002.inventory.model;
+package io.github.Lordrap2002.inventory.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
