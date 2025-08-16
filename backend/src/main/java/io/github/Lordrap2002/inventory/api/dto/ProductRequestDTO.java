@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class ProductRequestDTO {
-
     @NotBlank(message = "The name is required")
     private String name;
 

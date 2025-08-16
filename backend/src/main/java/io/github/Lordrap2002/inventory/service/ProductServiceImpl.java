@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-
     private final ProductRepository productRepository;
 
     public ProductServiceImpl(ProductRepository productRepository) {
@@ -36,7 +35,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO dto) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found with id " + id));
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
 
         product.setName(dto.getName());
         product.setUnitPrice(dto.getUnitPrice());
@@ -75,7 +75,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDTO getProductByID(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found with id " + id));
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
 
         return new ProductResponseDTO(
             product.getId(),

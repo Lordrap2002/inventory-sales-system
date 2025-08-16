@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
