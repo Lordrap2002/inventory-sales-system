@@ -4,4 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import io.github.Lordrap2002.inventory.entity.Sale;
 
-public interface SaleRepository extends JpaRepository<Sale, Long> {}
+public interface SaleRepository extends JpaRepository<Sale, Long> {
+    boolean existsByTransactionId(String transactionId);
+}
