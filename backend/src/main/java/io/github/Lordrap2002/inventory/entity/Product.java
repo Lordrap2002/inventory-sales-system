@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Version;
+import java.math.BigDecimal;;
 
 @Entity
 @Table(name = "products")
@@ -21,7 +22,7 @@ public class Product {
     private String description;
 
     @Column(nullable = false, precision = 12, scale = 2)
-    private Double unitPrice;
+    private BigDecimal unitPrice;
 
     @Column(nullable = false)
     private Integer stock;
@@ -30,7 +31,7 @@ public class Product {
     private Long version;
 
     public Product() {}
-    public Product(String name, String description, Double unitPrice, Integer stock) {
+    public Product(String name, String description, BigDecimal unitPrice, Integer stock) {
         this.name = name;
         this.description = description;
         this.unitPrice = unitPrice;
@@ -61,11 +62,11 @@ public class Product {
         this.description = description;
     }
 
-    public Double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(Double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
