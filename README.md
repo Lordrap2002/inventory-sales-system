@@ -159,8 +159,8 @@ A comprehensive web application for managing inventory, processing sales, and ge
 
 - **Home**: Navigation hub with main system sections
 - **Inventory Management**: Product CRUD operations
-- **Sales Management**: Create and manage sales
-- **Reports**: View business analytics and reports
+- **Sales Management**: Create and sales
+- **Reports**: View and download daily reports
 
 ## 📁 Project Structure
 
