@@ -22,6 +22,11 @@ export default function CreateSalePage() {
 
   const subtotal = selectedProduct ? (quantity * selectedProduct.unitPrice).toFixed(2) : 0;
 
+  const totalSale = saleDetails.reduce((total, item) => {
+    const product = products.find(p => p.id === item.productId);
+    return total + (product ? item.amount * product.unitPrice : 0);
+  }, 0);
+
   const handleAddDetail = () => {
     if (!selectedProduct) return;
     const detail = {
@@ -124,6 +129,15 @@ export default function CreateSalePage() {
             </div>
             <div className="bg-white rounded-3xl shadow-xl p-6 max-w-[600px] mx-auto text-center">
               <h1 className="text-2xl font-bold mb-6 text-gray-800">Current Sale Details</h1>
+              
+              {/* Total Sale Amount Display */}
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                <div className="flex justify-between items-center">
+                  <p className="text-lg font-bold text-blue-800">Sale Total:</p>
+                  <p className="text-2xl font-bold text-blue-900">${totalSale.toFixed(2)}</p>
+                </div>
+              </div>
+              
               <div className="max-h-[250px] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-4 p-2">
                 {saleDetails.map((item, idx) => {
                   const product = products.find(p => p.id === item.productId);
