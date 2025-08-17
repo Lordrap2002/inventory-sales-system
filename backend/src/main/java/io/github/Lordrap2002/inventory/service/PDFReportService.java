@@ -39,7 +39,6 @@ public class PDFReportService {
             Table table = new Table(3);
             table.setWidth(500);
 
-            PdfFont headerFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
             Cell header1 = new Cell().add(new Paragraph("Product"));
             Cell header2 = new Cell().add(new Paragraph("Quantity Sold"));
             Cell header3 = new Cell().add(new Paragraph("Total Amount"));
