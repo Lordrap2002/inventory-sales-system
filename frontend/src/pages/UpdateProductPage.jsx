@@ -1,16 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProductById, updateProduct } from "../services/productService";
+import { getProducts, getProductById, updateProduct } from "../services/productService";
 
 export default function UpdateProductPage() {
   const navigate = useNavigate();
-  const [productId, setProductId] = useState("");
+  const [products, setProducts] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState("");
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const data = await getProducts();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
+
   const handleSearchProduct = async () => {
-    if (!productId) return;
+    if (!selectedProductId) return;
+    try {
+      setLoading(true);
+      const data = await getProductById(selectedProductId);
+      setProduct(data);
+      setMessage("");
+      setLoading(false);
+    } catch (e) {
+      console.error("Error fetching product:", e);
+      setProduct(null);
+      setMessage("Product not found.");
+      setLoading(false);
+    }
+  };
+  
+  const handleProductSelection = async (productId) => {
+    if (!productId) {
+      setProduct(null);
+      setMessage("");
+      return;
+    }
     try {
       setLoading(true);
       const data = await getProductById(productId);
@@ -46,6 +75,16 @@ export default function UpdateProductPage() {
     }
   };
 
+  const isFormValid = () => {
+    if (!product) return false;
+    return product.name && 
+           product.name.trim() !== '' && 
+           product.unitPrice && 
+           product.unitPrice > 0 && 
+           product.stock && 
+           product.stock >= 0;
+  };
+
   return (
     <div className="min-h-screen flex flex-col w-screen justify-between bg-gradient-to-br from-gray-100 to-gray-400">
       <div className="flex-grow flex items-center justify-center px-2 py-2">
@@ -57,55 +96,70 @@ export default function UpdateProductPage() {
           Return
         </button>
         <div className="bg-white rounded-3xl shadow-xl p-12 w-full max-w-4xl mx-auto text-center relative">
-          <h1 className="text-4xl font-bold mb-8 text-gray-800">Update Product</h1>
-          <div className="flex flex-col gap-4 max-w-md mx-auto text-left mb-6">
-            <input
-              type="number"
-              placeholder="Enter Product ID"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
-              className="px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
-            />
-            <button
-              onClick={handleSearchProduct}
-              disabled={loading || !productId}
-              className="px-8 py-3 bg-blue-500 text-white font-semibold rounded-2xl shadow-lg
-                         hover:bg-blue-600 hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-sm"
-            >
-              {loading ? "Searching..." : "Search Product"}
-            </button>
-          </div>
-          {product && (
-            <div className="flex flex-col gap-4 max-w-md mx-auto text-left mb-4">
-              <input
-                type="text"
-                value={product.name}
-                onChange={(e) => setProduct({ ...product, name: e.target.value })}
-                className="px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <input
-                type="number"
-                value={product.unitPrice}
-                onChange={(e) => setProduct({ ...product, unitPrice: e.target.value })}
-                className="px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <input
-                type="number"
-                value={product.stock}
-                onChange={(e) => setProduct({ ...product, stock: e.target.value })}
-                className="px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <textarea
-                value={product.description}
-                onChange={(e) => setProduct({ ...product, description: e.target.value })}
-                rows={3}
-                className="px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
+                     <h1 className="text-2xl font-bold mb-6 text-gray-800">Update Product</h1>
+                      <div className="flex flex-col gap-4 max-w-md mx-auto text-left mb-6">
+              <select
+                value={selectedProductId}
+                onChange={(e) => {
+                  setSelectedProductId(e.target.value);
+                  handleProductSelection(e.target.value);
+                }}
+                className="w-full px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
+              >
+                <option value="">Select a product</option>
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+                     {product && (
+             <div className="flex flex-col gap-4 max-w-md mx-auto text-left mb-4">
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                 <input
+                   type="text"
+                   value={product.name}
+                   onChange={(e) => setProduct({ ...product, name: e.target.value })}
+                   className="w-full px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                 />
+               </div>
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Unit Price</label>
+                 <input
+                   type="number"
+                   value={product.unitPrice}
+                   onChange={(e) => setProduct({ ...product, unitPrice: e.target.value })}
+                   className="w-full px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                 />
+               </div>
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Stock Quantity</label>
+                 <input
+                   type="number"
+                   value={product.stock}
+                   onChange={(e) => setProduct({ ...product, stock: e.target.value })}
+                   className="w-full px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                 />
+               </div>
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                 <textarea
+                   value={product.description}
+                   onChange={(e) => setProduct({ ...product, description: e.target.value })}
+                   rows={3}
+                   className="w-full px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+                 />
+               </div>
               <button
                 onClick={handleUpdateProduct}
-                disabled={loading}
-                className="px-8 py-3 bg-green-500 text-white font-semibold rounded-2xl shadow-lg
-                           hover:bg-green-600 hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-sm"
+                disabled={loading || !isFormValid()}
+                className={`px-8 py-3 font-semibold rounded-2xl shadow-lg transform transition duration-300 text-sm ${
+                  loading || !isFormValid() 
+                    ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                    : 'bg-green-500 text-white hover:bg-green-600 hover:shadow-2xl hover:-translate-y-1'
+                }`}
               >
                 {loading ? "Updating..." : "Update Product"}
               </button>

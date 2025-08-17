@@ -35,7 +35,7 @@ export default function ListProductsPage() {
         </button>
 
         <div className="bg-white rounded-3xl shadow-xl p-12 w-full max-w-4xl mx-auto text-center relative">
-          <h1 className="text-4xl font-bold mb-8 text-gray-800">
+                     <h1 className="text-2xl font-bold mb-6 text-gray-800">
             Product List
           </h1>
 

@@ -61,36 +61,43 @@ export default function DailyReportPage() {
           Return
         </button>
         <div className="bg-white rounded-3xl shadow-xl p-12 w-full max-w-5xl mx-auto text-center relative">
-          <h1 className="text-4xl font-bold mb-8 text-gray-800">Daily Report</h1>
+          <h1 className="text-2xl font-bold mb-6 text-gray-800">Daily Report</h1>
           <div className="flex flex-col max-w-md mx-auto text-left mb-6 gap-4">
-            <div className="flex items-center gap-4">
-              <div className="bg-gray-500 rounded-xl shadow-sm p-2 flex-grow">
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full bg-transparent px-3 py-2 text-white focus:outline-none 
-                            focus:ring-2 focus:ring-blue-400 text-sm rounded-xl"
-                />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Report Date</label>
+              <div className="flex items-center gap-4">
+                <div className="bg-gray-500 rounded-xl shadow-sm p-2 flex-grow">
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="w-full bg-transparent px-3 py-2 text-white focus:outline-none 
+                              focus:ring-2 focus:ring-blue-400 text-sm rounded-xl"
+                  />
+                </div>
+                <button
+                  onClick={handleFetchJSON}
+                  disabled={loadingJSON || !date}
+                  className={`px-6 py-3 font-semibold rounded-2xl shadow-lg transform transition duration-300 text-sm ${
+                    loadingJSON || !date 
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                      : 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-2xl hover:-translate-y-1'
+                  }`}
+                >
+                  {loadingJSON ? "Loading..." : "Generate Report"}
+                </button>
+                <button
+                  onClick={handleDownloadCSV}
+                  disabled={loadingCSV || !date}
+                  className={`px-6 py-3 font-semibold rounded-2xl shadow-lg transform transition duration-300 text-sm ${
+                    loadingCSV || !date 
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                      : 'bg-green-500 text-white hover:bg-green-600 hover:shadow-2xl hover:-translate-y-1'
+                  }`}
+                >
+                  {loadingCSV ? "Downloading..." : "Download CSV"}
+                </button>
               </div>
-              <button
-                onClick={handleFetchJSON}
-                disabled={loadingJSON || !date}
-                className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-2xl shadow-lg
-                          hover:bg-blue-600 hover:shadow-2xl hover:-translate-y-1 transform 
-                          transition duration-300 text-sm"
-              >
-                {loadingJSON ? "Loading..." : "Generate Report"}
-              </button>
-              <button
-                onClick={handleDownloadCSV}
-                disabled={loadingCSV || !date}
-                className="px-6 py-3 bg-green-500 text-white font-semibold rounded-2xl shadow-lg
-                          hover:bg-green-600 hover:shadow-2xl hover:-translate-y-1 transform 
-                          transition duration-300 text-sm"
-              >
-                {loadingCSV ? "Downloading..." : "Download CSV"}
-              </button>
             </div>
             <div className="flex justify-between text-gray-800 font-semibold text-sm">
               <p>Total Transactions: {reportDataTransactions}</p>

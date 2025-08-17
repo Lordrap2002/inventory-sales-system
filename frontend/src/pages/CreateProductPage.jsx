@@ -35,6 +35,15 @@ export default function CreateProductPage() {
     }
   };
 
+  const isFormValid = () => {
+    return name && 
+           name.trim() !== '' && 
+           unitPrice && 
+           parseFloat(unitPrice) > 0 && 
+           stock && 
+           parseInt(stock) >= 0;
+  };
+
   return (
     <div className="min-h-screen flex flex-col w-screen justify-between bg-gradient-to-br from-gray-100 to-gray-400">
       <div className="flex-grow flex items-center justify-center px-2 py-2">
@@ -46,46 +55,61 @@ export default function CreateProductPage() {
         Return
         </button>
         <div className="bg-white rounded-3xl shadow-xl p-12 w-full max-w-4xl mx-auto text-center relative">
-          <h1 className="text-4xl font-bold mb-8 text-gray-800">
-            Create Product
-          </h1>
+                     <h1 className="text-2xl font-bold mb-6 text-gray-800">
+             Create Product
+           </h1>
           <div className="flex flex-col gap-4 max-w-md mx-auto text-left">
-            <input
-              type="text"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
-            />
-            <input
-              type="number"
-              placeholder="Unit Price"
-              value={unitPrice}
-              onChange={(e) => setUnitPrice(e.target.value)}
-              className="px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
-            />
-            <input
-              type="number"
-              placeholder="Stock"
-              value={stock}
-              onChange={(e) => setStock(e.target.value)}
-              className="px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
-            />
-            <textarea
-              placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm resize-none"
-              rows={3}
-            />
-            <button
-              onClick={handleCreateProduct}
-              disabled={loading}
-              className="px-8 py-3 bg-blue-500 text-white font-semibold rounded-2xl shadow-lg 
-                         hover:bg-blue-600 hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-sm"
-            >
-              {loading ? "Creating..." : "Create Product"}
-            </button>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+              <input
+                type="text"
+                placeholder="Enter product name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Unit Price</label>
+              <input
+                type="number"
+                placeholder="Enter unit price"
+                value={unitPrice}
+                onChange={(e) => setUnitPrice(e.target.value)}
+                className="w-full px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Stock Quantity</label>
+              <input
+                type="number"
+                placeholder="Enter stock quantity"
+                value={stock}
+                onChange={(e) => setStock(e.target.value)}
+                className="w-full px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                placeholder="Enter product description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm resize-none"
+                rows={3}
+              />
+            </div>
+                         <button
+               onClick={handleCreateProduct}
+               disabled={loading || !isFormValid()}
+               className={`px-8 py-3 font-semibold rounded-2xl shadow-lg transform transition duration-300 text-sm ${
+                 loading || !isFormValid() 
+                   ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                   : 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-2xl hover:-translate-y-1'
+               }`}
+             >
+               {loading ? "Creating..." : "Create Product"}
+             </button>
           </div>
           <div className="mt-4 min-h-[1.25rem]">
             {lastCreatedProduct && (

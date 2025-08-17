@@ -1,16 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProductById, deleteProduct } from "../services/productService";
+import { getProducts, getProductById, deleteProduct } from "../services/productService";
 
 export default function DeleteProductPage() {
   const navigate = useNavigate();
-  const [productId, setProductId] = useState("");
+  const [products, setProducts] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState("");
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const data = await getProducts();
+      setProducts(data);
+    };
+    fetchProducts();
+  }, []);
+
   const handleSearchProduct = async () => {
-    if (!productId) return;
+    if (!selectedProductId) return;
+    try {
+      setLoading(true);
+      const data = await getProductById(selectedProductId);
+      setProduct(data);
+      setMessage("");
+      setLoading(false);
+    } catch (e) {
+      console.error("Error fetching product:", e);
+      setProduct(null);
+      setMessage("Product not found.");
+      setLoading(false);
+    }
+  };
+
+  const handleProductSelection = async (productId) => {
+    if (!productId) {
+      setProduct(null);
+      setMessage("");
+      return;
+    }
     try {
       setLoading(true);
       const data = await getProductById(productId);
@@ -32,7 +61,7 @@ export default function DeleteProductPage() {
       await deleteProduct(product.id);
       setMessage(`Product deleted: ${product.name}`);
       setProduct(null);
-      setProductId("");
+      setSelectedProductId("");
       setLoading(false);
     } catch (e) {
       console.error("Error deleting product:", e);
@@ -52,50 +81,62 @@ export default function DeleteProductPage() {
           Return
         </button>
         <div className="bg-white rounded-3xl shadow-xl p-12 w-full max-w-4xl mx-auto text-center relative">
-          <h1 className="text-4xl font-bold mb-8 text-gray-800">Delete Product</h1>
-          <div className="flex flex-col gap-4 max-w-md mx-auto text-left mb-6">
-            <input
-              type="number"
-              placeholder="Enter Product ID"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
-              className="px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
-            />
-            <button
-              onClick={handleSearchProduct}
-              disabled={loading || !productId}
-              className="px-8 py-3 bg-blue-500 text-white font-semibold rounded-2xl shadow-lg
-                         hover:bg-blue-600 hover:shadow-2xl hover:-translate-y-1 transform transition duration-300 text-sm"
-            >
-              {loading ? "Searching..." : "Search Product"}
-            </button>
-          </div>
-          {product && (
-            <div className="flex flex-col gap-4 max-w-md mx-auto text-left mb-4">
-              <input
-                type="text"
-                value={product.name}
-                readOnly
-                className="px-3 py-2 border rounded-xl shadow-sm bg-gray-100 text-gray-900 text-sm"
-              />
-              <input
-                type="number"
-                value={product.unitPrice}
-                readOnly
-                className="px-3 py-2 border rounded-xl shadow-sm bg-gray-100 text-gray-900 text-sm"
-              />
-              <input
-                type="number"
-                value={product.stock}
-                readOnly
-                className="px-3 py-2 border rounded-xl shadow-sm bg-gray-100 text-gray-900 text-sm"
-              />
-              <textarea
-                value={product.description}
-                readOnly
-                rows={3}
-                className="px-3 py-2 border rounded-xl shadow-sm bg-gray-100 text-gray-900 text-sm resize-none"
-              />
+                     <h1 className="text-2xl font-bold mb-6 text-gray-800">Delete Product</h1>
+                      <div className="flex flex-col gap-4 max-w-md mx-auto text-left mb-6">
+              <select
+                value={selectedProductId}
+                onChange={(e) => {
+                  setSelectedProductId(e.target.value);
+                  handleProductSelection(e.target.value);
+                }}
+                className="w-full px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
+              >
+                <option value="">Select a product to delete</option>
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+                     {product && (
+             <div className="flex flex-col gap-4 max-w-md mx-auto text-left mb-4">
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                 <input
+                   type="text"
+                   value={product.name}
+                   readOnly
+                   className="w-full px-3 py-2 border rounded-xl shadow-sm bg-gray-100 text-gray-900 text-sm"
+                 />
+               </div>
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Unit Price</label>
+                 <input
+                   type="number"
+                   value={product.unitPrice}
+                   readOnly
+                   className="w-full px-3 py-2 border rounded-xl shadow-sm bg-gray-100 text-gray-900 text-sm"
+                 />
+               </div>
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Stock Quantity</label>
+                 <input
+                   type="number"
+                   value={product.stock}
+                   readOnly
+                   className="w-full px-3 py-2 border rounded-xl shadow-sm bg-gray-100 text-gray-900 text-sm"
+                 />
+               </div>
+               <div>
+                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                 <textarea
+                   value={product.description}
+                   readOnly
+                   rows={3}
+                   className="w-full px-3 py-2 border rounded-xl shadow-sm bg-gray-100 text-gray-900 text-sm resize-none"
+                 />
+               </div>
               <button
                 onClick={handleDeleteProduct}
                 disabled={loading}

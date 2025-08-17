@@ -10,6 +10,7 @@ export default function CreateSalePage() {
   const [quantity, setQuantity] = useState(1);
   const [saleDetails, setSaleDetails] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -36,6 +37,7 @@ export default function CreateSalePage() {
     
     setSelectedProduct(null);
     setQuantity(1);
+    setMessage("");
   };
 
   const handleFinalizeSale = async () => {
@@ -48,10 +50,11 @@ export default function CreateSalePage() {
       console.log("Sale created:", result);
       setSaleDetails([]);
       setLoading(false);
-      alert("Sale created successfully!");
+      setMessage("Sale created successfully!");
     } catch (e) {
       console.error("Error creating sale:", e);
       setLoading(false);
+      setMessage("Error creating sale. Please try again.");
     }
   };
 
@@ -143,6 +146,15 @@ export default function CreateSalePage() {
               >
                 {loading ? "Finalizing..." : "Finalize Sale"}
               </button>
+                             {message && (
+                 <div className="mt-4 min-h-[1.25rem]">
+                   <p className={`text-sm font-semibold ${
+                     message.includes("Error") ? "text-red-600" : "text-green-600"
+                   }`}>
+                     {message}
+                   </p>
+                 </div>
+               )}
             </div>
           </div>
         </div>
