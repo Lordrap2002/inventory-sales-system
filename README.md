@@ -141,7 +141,8 @@ A comprehensive web application for managing inventory, processing sales, and ge
 
 ### Reports
 
-- `GET /api/reports/daily` - Get daily sales report
+- `GET /api/reports/daily-sales` - Get daily sales report in JSON format
+- `GET /api/reports/daily-sales/csv` - Get daily sales report in CSV format
 
 ## 🔐 Security
 
