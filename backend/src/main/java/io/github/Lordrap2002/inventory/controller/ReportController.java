@@ -2,6 +2,7 @@ package io.github.Lordrap2002.inventory.controller;
 
 import io.github.Lordrap2002.inventory.api.dto.DailySalesReportDTO;
 import io.github.Lordrap2002.inventory.api.service.ReportService;
+import io.github.Lordrap2002.inventory.service.PDFReportService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,11 @@ import java.time.LocalDate;
 public class ReportController {
 
     private final ReportService reportService;
+    private final PDFReportService pdfReportService;
 
-    public ReportController(ReportService reportService) {
+    public ReportController(ReportService reportService, PDFReportService pdfReportService) {
         this.reportService = reportService;
+        this.pdfReportService = pdfReportService;
     }
 
     @GetMapping("/daily-sales")
@@ -46,6 +49,23 @@ public class ReportController {
             .header("Content-Disposition", "attachment; filename=\"daily_sales_" + date + ".csv\"")
             .header("Content-Type", "text/csv")
             .body(csvBytes);
+    }
+
+    @GetMapping("/daily-sales/pdf")
+    public ResponseEntity<byte[]> getDailySalesReportPDF(
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        try {
+            DailySalesReportDTO report = reportService.getDailySalesReport(date);
+            byte[] pdfBytes = pdfReportService.generateDailySalesReportPDF(report);
+
+            return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"daily_sales_" + date + ".pdf\"")
+                .header("Content-Type", "application/pdf")
+                .body(pdfBytes);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }

@@ -23,6 +23,7 @@ A comprehensive web application for managing inventory, processing sales, and ge
 ### Reporting System
 
 - **Daily Sales Reports**: Generate and view daily sales summaries
+- **Multiple Formats**: Export reports in JSON, CSV, and PDF formats
 - **Inventory Reports**: Track product stock levels and movements
 - **Business Analytics**: Monitor sales performance and trends
 
@@ -143,6 +144,7 @@ A comprehensive web application for managing inventory, processing sales, and ge
 
 - `GET /api/reports/daily-sales` - Get daily sales report in JSON format
 - `GET /api/reports/daily-sales/csv` - Get daily sales report in CSV format
+- `GET /api/reports/daily-sales/pdf` - Get daily sales report in PDF format
 
 ## 🔐 Security
 
