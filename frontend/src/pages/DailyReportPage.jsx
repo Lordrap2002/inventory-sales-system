@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDailyReportJSON, downloadDailyReportCSV } from "../services/reportService";
+import { getDailyReportJSON, downloadDailyReportCSV, downloadDailyReportPDF } from "../services/reportService";
 
 export default function DailyReportPage() {
   const navigate = useNavigate();
@@ -10,6 +10,7 @@ export default function DailyReportPage() {
   const [reportDataTransactions, setReportDataTransactions] = useState(0);
   const [loadingJSON, setLoadingJSON] = useState(false);
   const [loadingCSV, setLoadingCSV] = useState(false);
+  const [loadingPDF, setLoadingPDF] = useState(false);
 
   const handleFetchJSON = async () => {
     if (!date) return;
@@ -49,6 +50,26 @@ export default function DailyReportPage() {
     }
   };
 
+  const handleDownloadPDF = async () => {
+    if (!date) return;
+    try {
+      setLoadingPDF(true);
+      const blob = await downloadDailyReportPDF(date);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `daily_report_${date}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      setLoadingPDF(false);
+    } catch (e) {
+      console.error("Error downloading PDF report:", e);
+      setLoadingPDF(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col w-screen justify-between bg-gradient-to-br from-gray-100 to-gray-400">
       <div className="flex-grow flex items-center justify-center px-2 py-2">
@@ -62,19 +83,19 @@ export default function DailyReportPage() {
         </button>
         <div className="bg-white rounded-3xl shadow-xl p-12 w-full max-w-5xl mx-auto text-center relative">
           <h1 className="text-2xl font-bold mb-6 text-gray-800">Daily Report</h1>
-          <div className="flex flex-col max-w-md mx-auto text-left mb-6 gap-4">
+                     <div className="flex flex-col max-w-2xl mx-auto text-left mb-6 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Report Date</label>
-              <div className="flex items-center gap-4">
-                <div className="bg-gray-500 rounded-xl shadow-sm p-2 flex-grow">
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="w-full bg-transparent px-3 py-2 text-white focus:outline-none 
-                              focus:ring-2 focus:ring-blue-400 text-sm rounded-xl"
-                  />
-                </div>
+              <div className="bg-gray-500 rounded-xl shadow-sm p-2 mb-4">
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full bg-transparent px-3 py-2 text-white focus:outline-none 
+                            focus:ring-2 focus:ring-blue-400 text-sm rounded-xl"
+                />
+              </div>
+                             <div className="flex justify-center gap-3 mb-4">
                 <button
                   onClick={handleFetchJSON}
                   disabled={loadingJSON || !date}
@@ -96,6 +117,17 @@ export default function DailyReportPage() {
                   }`}
                 >
                   {loadingCSV ? "Downloading..." : "Download CSV"}
+                </button>
+                <button
+                  onClick={handleDownloadPDF}
+                  disabled={loadingPDF || !date}
+                  className={`px-6 py-3 font-semibold rounded-2xl shadow-lg transform transition duration-300 text-sm ${
+                    loadingPDF || !date 
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
+                      : 'bg-red-500 text-white hover:bg-red-600 hover:shadow-2xl hover:-translate-y-1'
+                  }`}
+                >
+                  {loadingPDF ? "Downloading..." : "Download PDF"}
                 </button>
               </div>
             </div>
