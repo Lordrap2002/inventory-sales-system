@@ -158,9 +158,9 @@ VITE_API_PASSWORD=your_secure_password
 
 ---
 
-## Getting Started
+## System Features
 
-### **System Access**
+### **1. System Access**
 
 1. Open your browser and navigate to: `http://localhost:5173`
 2. You will see the main page with three main options:
@@ -168,11 +168,7 @@ VITE_API_PASSWORD=your_secure_password
    - **Sales**
    - **Reports**
 
----
-
-## System Features
-
-### **1. Inventory Management**
+### **2. Inventory Management**
 
 #### **Create Product**
 
@@ -208,11 +204,11 @@ VITE_API_PASSWORD=your_secure_password
 3. Confirm deletion
 4. Click **Delete Product**
 
-### **2. Sales Management**
+### **3. Sales Management**
 
 #### **Create Sale**
 
-1. Navigate to **Sales** → **Create Sale**
+1. Navigate to **Sales**
 2. Select products from inventory
 3. Specify quantities for each product
 4. The system automatically calculates:
@@ -221,11 +217,11 @@ VITE_API_PASSWORD=your_secure_password
    - Remaining stock
 5. Click **Create Sale**
 
-### **3. Report Generation**
+### **4. Report Generation**
 
 #### **Daily Sales Report**
 
-1. Navigate to **Reports** → **Daily Report**
+1. Navigate to **Reports**
 2. Select the report date
 3. Available options:
    - **Generate Report**: View data on screen
@@ -245,7 +241,6 @@ Each report includes:
 - **Header**: Title and date
 - **Product Table**: Name, quantity sold, total amount
 - **Summary**: Total transactions and revenue
-- **Footer**: System information
 
 ---
 
@@ -256,12 +251,6 @@ Each report includes:
 - **Method**: HTTP Basic Authentication
 - **Encryption**: BCrypt for passwords
 - **Security**: CORS configured for development
-
-### **User Roles**
-
-- **Administrator**: Complete system access
-- **User**: Limited access based on permissions
-- **Manager**: Access to inventory and sales
 
 ### **Security Configuration**
 

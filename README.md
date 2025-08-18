@@ -1,6 +1,6 @@
 # Inventory and Sales Management System
 
-A comprehensive web application for managing inventory, processing sales, and generating business reports. Built with Spring Boot backend and React frontend.
+A comprehensive web application for managing inventory, processing sales, and generating daily reports. Built with Spring Boot for the backend and React for the frontend.
 
 ## 🚀 Features
 
@@ -10,7 +10,6 @@ A comprehensive web application for managing inventory, processing sales, and ge
 - **Update Products**: Modify existing product information
 - **Delete Products**: Remove products from the system
 - **List Products**: View all products in the inventory
-- **Stock Control**: Track product quantities with automatic updates
 
 ### Sales Management
 
@@ -24,13 +23,10 @@ A comprehensive web application for managing inventory, processing sales, and ge
 
 - **Daily Sales Reports**: Generate and view daily sales summaries
 - **Multiple Formats**: Export reports in JSON, CSV, and PDF formats
-- **Inventory Reports**: Track product stock levels and movements
-- **Business Analytics**: Monitor sales performance and trends
 
 ### User Management
 
 - **Role-based Access Control**: Secure authentication system
-- **User Roles**: Different permission levels for system access
 - **Secure Authentication**: HTTP Basic authentication with encrypted passwords
 
 ## 🏗️ Architecture
