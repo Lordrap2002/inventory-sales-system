@@ -11,6 +11,9 @@ export default function CreateProductPage() {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [lastCreatedProduct, setLastCreatedProduct] = useState(null);
+  const NAME_MIN = 3;
+  const NAME_MAX = 100;
+  const DESC_MAX = 300;
 
   const handleCreateProduct = async () => {
     try {
@@ -36,12 +39,19 @@ export default function CreateProductPage() {
   };
 
   const isFormValid = () => {
-    return name && 
-           name.trim() !== '' && 
-           unitPrice && 
-           parseFloat(unitPrice) > 0 && 
-           stock && 
-           parseInt(stock) >= 0;
+    const trimmedName = name.trim();
+    const nameLen = trimmedName.length;
+    const descriptionLen = (description || "").trim().length;
+
+    const priceNum = parseFloat(unitPrice);
+    const stockNum = parseInt(stock);
+
+    const nameValid = nameLen >= NAME_MIN && nameLen <= NAME_MAX;
+    const descriptionValid = descriptionLen <= DESC_MAX;
+    const priceValid = unitPrice !== "" && !Number.isNaN(priceNum) && priceNum > 0;
+    const stockValid = stock !== "" && !Number.isNaN(stockNum) && stockNum >= 0;
+
+    return nameValid && descriptionValid && priceValid && stockValid;
   };
 
   return (
@@ -68,6 +78,7 @@ export default function CreateProductPage() {
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm"
               />
+              <p className="mt-1 text-xs text-gray-600">{`Min ${NAME_MIN} - Max ${NAME_MAX} characters`}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Unit Price</label>
@@ -98,6 +109,7 @@ export default function CreateProductPage() {
                 className="w-full px-3 py-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 placeholder-gray-500 text-sm resize-none"
                 rows={3}
               />
+              <p className="mt-1 text-xs text-gray-600">{`Max ${DESC_MAX} characters`}</p>
             </div>
                          <button
                onClick={handleCreateProduct}

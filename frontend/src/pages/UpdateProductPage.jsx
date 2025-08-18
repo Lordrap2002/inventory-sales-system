@@ -9,6 +9,9 @@ export default function UpdateProductPage() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const NAME_MIN = 3;
+  const NAME_MAX = 100;
+  const DESC_MAX = 300;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -77,12 +80,18 @@ export default function UpdateProductPage() {
 
   const isFormValid = () => {
     if (!product) return false;
-    return product.name && 
-           product.name.trim() !== '' && 
-           product.unitPrice && 
-           product.unitPrice > 0 && 
-           product.stock && 
-           product.stock >= 0;
+    const trimmedName = (product.name || "").trim();
+    const nameLen = trimmedName.length;
+    const descriptionLen = (product.description || "").trim().length;
+    const priceNum = Number(product.unitPrice);
+    const stockNum = Number(product.stock);
+
+    const nameValid = nameLen >= NAME_MIN && nameLen <= NAME_MAX;
+    const descriptionValid = descriptionLen <= DESC_MAX;
+    const priceValid = !Number.isNaN(priceNum) && priceNum > 0;
+    const stockValid = !Number.isNaN(stockNum) && stockNum >= 0;
+
+    return nameValid && descriptionValid && priceValid && stockValid;
   };
 
   return (
@@ -124,6 +133,7 @@ export default function UpdateProductPage() {
                    onChange={(e) => setProduct({ ...product, name: e.target.value })}
                    className="w-full px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                  />
+                 <p className="mt-1 text-xs text-gray-600">{`Min ${NAME_MIN} - Max ${NAME_MAX} characters`}</p>
                </div>
                <div>
                  <label className="block text-sm font-medium text-gray-700 mb-2">Unit Price</label>
@@ -151,6 +161,7 @@ export default function UpdateProductPage() {
                    rows={3}
                    className="w-full px-3 py-2 border rounded-xl shadow-sm text-gray-900 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
                  />
+                 <p className="mt-1 text-xs text-gray-600">{`Max ${DESC_MAX} characters`}</p>
                </div>
               <button
                 onClick={handleUpdateProduct}
