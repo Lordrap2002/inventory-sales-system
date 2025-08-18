@@ -39,11 +39,17 @@ export default function CreateSalePage() {
         ? { ...product, stock: product.stock - quantity }
         : product
     ));
-    
     setSelectedProduct(null);
     setQuantity(1);
     setMessage("");
   };
+
+  const handleDeleteDetail = (index) => {
+    const detail = saleDetails[index];
+    if (!detail) return;
+    setProducts(prev => prev.map(p => p.id === detail.productId ? { ...p, stock: p.stock + detail.amount } : p));
+    setSaleDetails(prev => prev.filter((_, i) => i !== index));
+  };  
 
   const handleFinalizeSale = async () => {
     if (saleDetails.length === 0) return;
@@ -129,21 +135,24 @@ export default function CreateSalePage() {
             </div>
             <div className="bg-white rounded-3xl shadow-xl p-6 max-w-[600px] mx-auto text-center">
               <h1 className="text-2xl font-bold mb-6 text-gray-800">Current Sale Details</h1>
-              
-              {/* Total Sale Amount Display */}
               <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
                 <div className="flex justify-between items-center">
                   <p className="text-lg font-bold text-blue-800">Sale Total:</p>
                   <p className="text-2xl font-bold text-blue-900">${totalSale.toFixed(2)}</p>
                 </div>
               </div>
-              
               <div className="max-h-[250px] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-4 p-2">
                 {saleDetails.map((item, idx) => {
                   const product = products.find(p => p.id === item.productId);
                   const subtotal = product ? (item.amount * product.unitPrice).toFixed(2) : 0;
                   return (
-                    <div key={idx} className="bg-gray-100 p-3 rounded-xl shadow-sm text-left text-sm text-gray-800">
+                    <div key={idx} className="bg-gray-100 p-3 rounded-xl shadow-sm text-left text-sm text-gray-800 relative">
+                      <button
+                        onClick={() => handleDeleteDetail(idx)}
+                        className="absolute top-1 right-1 bg-transparent border-none text-white hover:text-red-800"
+                      >
+                        ✕
+                      </button>
                       <p><strong>Product:</strong> {product ? product.name : `ID: ${item.productId}`}</p>
                       <p><strong>Unit Price:</strong> ${product ? product.unitPrice : 'N/A'}</p>
                       <p><strong>Quantity:</strong> {item.amount}</p>
@@ -160,15 +169,13 @@ export default function CreateSalePage() {
               >
                 {loading ? "Finalizing..." : "Finalize Sale"}
               </button>
-                             {message && (
-                 <div className="mt-4 min-h-[1.25rem]">
-                   <p className={`text-sm font-semibold ${
-                     message.includes("Error") ? "text-red-600" : "text-green-600"
-                   }`}>
-                     {message}
-                   </p>
-                 </div>
-               )}
+              {message && (
+                <div className="mt-4 min-h-[1.25rem]">
+                  <p className={`text-sm font-semibold ${message.includes("Error") ? "text-red-600" : "text-green-600"}`}>
+                    {message}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
